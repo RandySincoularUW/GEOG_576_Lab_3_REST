@@ -28,8 +28,9 @@
       "esri/Map", 
       "esri/views/MapView",
       "esri/widgets/BasemapGallery",
-      "esri/widgets/BasemapToggle"], 
-      function(esriConfig, Map, MapView,BasemapGallery,BasemapToggle) {  
+      "esri/widgets/BasemapToggle",
+      "esri/widgets/Locate"], 
+      function(esriConfig, Map, MapView,BasemapGallery,BasemapToggle,Locate) {  
       esriConfig.apiKey = "AAPK31b6d186207249df8e734143d5a55707PfJ6EjieaYZVgURT8tlc7AuNytCxnD5Yg7FAFXY_nw7zKZlDoa8F1Ob929e5pYUa";
       
       const map = new Map({
@@ -61,13 +62,23 @@
 
       // basemap toggle
       const basemapToggle = new BasemapToggle({
-        view: view
+        view: view,
+        nextBasemap: "hybrid"
       })
+
+      const locateBtn = new Locate({
+          view: view
+        });
 
       // Add the widget to the top-right corner of the view
       view.ui.add(basemapGallery, {
       position: "top-right"
       });
+
+      //dd the locate widget to the top left corner of the view
+      view.ui.add(locateBtn, {
+      position: "top-left"
+
 
     });  // end require
 
