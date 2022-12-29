@@ -27,7 +27,8 @@
       "esri/config", 
       "esri/Map", 
       "esri/views/MapView",
-      "esri/widgets/BasemapGallery"], 
+      "esri/widgets/BasemapGallery",
+      "esri/widgets/Basemaptoggle"], 
       function(esriConfig, Map, MapView,BasemapGallery) {  
       esriConfig.apiKey = "AAPK31b6d186207249df8e734143d5a55707PfJ6EjieaYZVgURT8tlc7AuNytCxnD5Yg7FAFXY_nw7zKZlDoa8F1Ob929e5pYUa";
       
@@ -57,6 +58,11 @@
         container: basemapGalleryDiv
           });
 
+      // basemap toggle
+      const Basemaptoggle = new Basemaptoggle({
+        view: view
+      })
+      
       // Add the widget to the top-right corner of the view
       view.ui.add(basemapGallery, {
       position: "top-right"
