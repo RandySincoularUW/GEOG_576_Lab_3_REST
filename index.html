@@ -37,7 +37,7 @@
         basemap: "arcgis-imagery" // Basemap layer
       });
 
-      console.log("getting mapView  ...")
+      console.log("setting up mapView  ...")
 
 
       const view = new MapView({
@@ -51,7 +51,7 @@
 
       }); // end MapView
 
-      console.log("done with mapview ...")
+      console.log("setting up basemap gallery ...")
 
       // basemap
       const basemapGallery = new BasemapGallery({
@@ -59,12 +59,15 @@
         container: basemapGalleryDiv
           });
 
+      console.log("setting up basemap toggle ...")
 
       // basemap toggle
       const basemapToggle = new BasemapToggle({
         view: view,
         nextBasemap: "hybrid"
       })
+
+      console.log("setting up locateBtn  ...")
 
       const locateBtn = new Locate({
           view: view
