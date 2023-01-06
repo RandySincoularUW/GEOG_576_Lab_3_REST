@@ -24,8 +24,10 @@
     require([
      "esri/config",
       "esri/Map",
-      "esri/views/MapView"
-    ], function (esriConfig,Map, MapView) {
+      "esri/views/MapView",
+      "esri/Graphic",
+      "esri/layers/GraphicsLayer"
+    ], function (esriConfig,Map, MapView,Graphic, GraphicsLayer) {
 
       esriConfig.apiKey = "AAPK31b6d186207249df8e734143d5a55707PfJ6EjieaYZVgURT8tlc7AuNytCxnD5Yg7FAFXY_nw7zKZlDoa8F1Ob929e5pYUa";
       const map = new Map({
@@ -43,6 +45,35 @@
           snapToZoom: false
         }
       });
+
+      // New graphics layer
+      const graphicsLayer = new GraphicsLayer()
+      map.add(graphicsLayer)
+
+      // geometry of the point
+      const point = { //Create a point  
+        type: "point",  
+        longitude: -97.750689,    //long lat of Stevie Ray Vaughan Statue
+        latitude: 30.263098
+      };
+
+      // marker style
+      const simpleMarkerSymbol = {  
+      type: "simple-marker",  
+      [0, 0, 139],  // Color of blues rock
+      outline: {  
+        color: [255, 255, 255], // White  
+        width: 1  }  
+      };
+      
+      // create the point
+      const pointGraphic = new Graphic({
+        geometry: point,
+        symbol: simpleMarkerSymbol
+      })
+
+      // Add point to graphicsLayer
+      graphicsLayer.add(pointGraphic)
 
     });
 
