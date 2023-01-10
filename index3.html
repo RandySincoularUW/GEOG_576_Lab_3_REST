@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+
+        <style>
+            html, body, #viewDiv {
+                padding: 0;
+                margin: 0;
+                height: 100%;
+                width: 100%;
+            }
+        </style>
+
+        <link rel="stylesheet" href="https://js.arcgis.com/4.25/esri/themes/light/main.css">
+        <script src="https://js.arcgis.com/4.25/"></script>
+
+ 
+    </head>
+        
+        <script>
+
+            require([
+                "esri/config",
+                "esri/Map",
+                "esri/views/MapView",
+                "esri/layers/FeatureLayer"
+            ], function(esriConfig,Map, MapView, FeatureLayer) {
+
+                esriConfig.apiKey = "AAPKe51450f0923e4a9cb5a77fa3ced7a0eaqq7t5C_GDDJBzWWjPyDGS1Wx9Irc4t1FvEzH5Y0WqHvB4xDFdBYFrd3UWs88cEIb";
+ 
+
+         
+
+            
+            const map = new Map({
+            basemap: "arcgis-topographic" // Basemap layer service
+            });
+
+            const view = new MapView({
+                container: "viewDiv",
+                map: map,
+                center: [-118.80543,34.02700],
+                zoom: 13
+            });
+
+            //Trailheads feature layer (points)
+            const trailheadsLayer = new FeatureLayer({
+            url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer/0"
+            });
+
+
+            map.add(trailheadsLayer);
+
+            //Trails feature layer (lines)
+            const trailsLayer = new FeatureLayer({
+                url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trails/FeatureServer/0"
+            });
+
+            map.add(trailsLayer, 0);
+
+        }); //end require function
+
+        </script>
+        <body>
+            <div id="viewDiv"></div>
+        </body>
+    </body>
+</html>

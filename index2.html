@@ -19,6 +19,30 @@
   <script src="https://js.arcgis.com/4.19/"></script>
 
   <script>
+ 
+    // For Token
+ /*
+    const { ApplicationSession } = require("@esri/arcgis-rest-auth"); // npm install @esri/arcgis-rest-auth
+    const session = new ApplicationSession({
+      clientId: SNWLcBHUViPCX1XZ,
+      clientSecret: aea3a0ae28044d2485b5b448a9bd5b9f,
+      duration: 1440
+    });
+    session.getToken("https://www.arcgis.com/sharing/rest/oauth2/token")
+      .then(function(response) {
+      // response is your access_token, in this case it is good for 1440 minutes
+
+      console.log("Token response: " + response)
+
+      }).catch(function(error) {
+    // request failed, handle errors
+    });
+*/
+    // myToken = 'pCFNt-l77q6BSKTxY9i7xKM_Y6DZks7s_sDKccUw7hL8TT7v8IfELeAsTVARohDeJ0fHtWOoV42DS6t4i5kIAfmoY8vDL_O4QBOv2f---52uNxNd236nIqy6yi4CysnU_4oWjHbKYQbgdb6UNOwSPQ..'
+
+    // myToken = 'uDoKEtJqj4IjGjC-lKBtnn3yI1goc3juTlFhaorYbSRVlhulRlFAD_IjaToJXZK1o4SX-U7G8Etyln0pTy2o6GmQa9CR8CVpQIGbwknuyUtGbUYxTVlXAEU2pFrrxAf69r_Q_2ScejxfLmpPNpNKMg..'
+
+    myToken = 'RmvISFUWxelPgijiQbaFZ40ZQjA6L-Jf_uf0d2VRRGdkNJE66VhvnzgY0l4ms4BQSIC1vOXmntu9MuaNMcsU07547kJ_Bw5-cZcVjt0e1eXdhQLcHTnBfZUlpUPxmvToSC_Ji_0o-FPn56N-_NYrMQ..'
 
     console.log("setting up require ")
     require([
@@ -26,10 +50,11 @@
       "esri/Map",
       "esri/views/MapView",
       "esri/Graphic",
-      "esri/layers/GraphicsLayer"
-    ], function (esriConfig,Map, MapView,Graphic, GraphicsLayer) {
+      "esri/layers/GraphicsLayer",
+      "esri/layers/FeatureLayer"
+    ], function (esriConfig,Map, MapView,Graphic, GraphicsLayer,FeatureLayer) {
 
-      esriConfig.apiKey = "AAPK31b6d186207249df8e734143d5a55707PfJ6EjieaYZVgURT8tlc7AuNytCxnD5Yg7FAFXY_nw7zKZlDoa8F1Ob929e5pYUa";
+      esriConfig.apiKey = "AAPKe51450f0923e4a9cb5a77fa3ced7a0eaqq7t5C_GDDJBzWWjPyDGS1Wx9Irc4t1FvEzH5Y0WqHvB4xDFdBYFrd3UWs88cEIb";
       const map = new Map({
         basemap: "arcgis-imagery" // Basemap layer
       });
@@ -50,12 +75,16 @@
       const graphicsLayer = new GraphicsLayer()
       map.add(graphicsLayer)
 
+      console.log("setting point geometry ...")
+
       // geometry of the point
       const point = { //Create a point  
         type: "point",  
         longitude: -97.750689,    //long lat of Stevie Ray Vaughan Statue
         latitude: 30.263098
       };
+
+      console.log("setting up marker symbol ...")
 
       // marker style
       const simpleMarkerSymbol = {  
@@ -66,16 +95,150 @@
         width: 1  }  
       };
       
-      // create the point
-      const pointGraphic = new Graphic({
+      console.log("setting up picture marker ...")
+
+      // Challenge 1
+      let symbol = {
+        type: "picture-marker",  // autocasts as new PictureMarkerSymbol()
+        url: "https://static.arcgis.com/images/Symbols/Shapes/BlackStarLargeB.png",
+        width: "64px",
+        height: "64px"
+      };
+
+      /*
+        // create the point
+        const pointGraphic = new Graphic({
         geometry: point,
         symbol: simpleMarkerSymbol
+      })  */
+
+      // Challenge 1
+      // Popup Properties
+      const popupTemplate = {
+        title: "{Name}",
+        content: "{Description}"
+      }
+      const attributes = {
+        Name: "Stevie Ray Vaughan Statue",
+        Description: "A bronze sculpture of Stevie Ray Vaughan by Ralph Helmick"
+      }
+
+
+      console.log("setting up point graphic ...")
+
+      // Challenge 1 
+      // create the point
+      // Popup Attributes
+      const pointGraphic = new Graphic({
+        geometry: point,
+        symbol: symbol,
+        attributes: attributes,
+        popupTemplate: popupTemplate
       })
 
       // Add point to graphicsLayer
       graphicsLayer.add(pointGraphic)
 
+    // Challenge 2
+
+    console.log("setting up line symbol...")
+
+    // Create a simple line symbol for rendering the line in the view
+    const lineSymbol = {
+      type: "simple-line", // autocasts as new SimpleLineSymbol()
+      color: [226, 119, 40], // RGB color values as an array
+      width: 4
+    };
+
+    // Create a line geometry with the coordinates of the line
+    const polyline = {
+      type: "polyline", // autocasts as new Polyline()
+      paths: [[-111.3, 52.68], [-98, 49.5], [-93.94, 29.89]]
+    };
+
+    // Create a simple object containing useful information relating to the feature
+    const lineAtt = {
+      Name: "Keystone Pipeline", // The name of the pipeline
+      Owner: "TransCanada", // The owner of the pipeline
+      Length: "3,456 km" // The length of the pipeline
+    };
+
+    console.log("setting up polyline graphic...")
+
+      // Create the graphic
+    const polylineGraphic = new Graphic({
+      geometry: polyline, // Add the geometry created in step 3
+      symbol: lineSymbol, // Add the symbol created in step 4
+      attributes: lineAtt // Add the attributes created in step 5
     });
+
+      // Add the graphic to the view's default graphics view
+      // If adding multiple graphics, use addMany and pass in the array of graphics.
+
+      console.log(" adding graphics layer ...")
+      graphicsLayer.add(polylineGraphic);
+
+      console.log(" done adding graphics layer ...")
+
+      console.log(" adding school layer ...")
+
+
+      // Part 4 - Feature layer
+
+      
+
+      const popupEduusa = {
+        "title": "EDUS",
+        "content": "<b>Name: </b> {Name}<br><b>Total Enrollment: </b> {TOT_ENROLL}<br>"
+      }
+      const usaeduLayer = new FeatureLayer({
+        url: "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/Colleges_and_Universities_View/FeatureServer",
+
+      //adding the popup fields
+      outFields: ["NAME","TOT_ENROLL"],
+      popupTemplate: popupEduusa
+      });  // end usaeduLayer
+
+    //adding the feature layer to the map
+    map.add(usaeduLayer);
+
+    // +++++++++++++++
+
+    // Challenge 4: airport layer
+
+    const airportRenderer = {
+        "type": "simple",
+        "symbol": {
+          "type": "picture-marker",
+          "url": "https://sounny.github.io/agol/outline_local_airport_black_24dp.png",
+          "width": "18px",
+          "height": "18px"
+        }
+      }
+
+       const popupAirports = {
+        "title": "US Airports",
+        "content": "<b>Name: </b> {FAC_Name}<br><b>Owner name: </b> {owner_name}<br>"
+      }
+      const airportLayer = new FeatureLayer({
+        url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/US_Airports_G756/FeatureServer",
+        rederer: airportRenderer,
+
+      //adding the popup fields
+      outFields: ["FAC_NAME","OWNER_NAME"],
+      popupTemplate: popupAirports
+      });  // end usaeduLayer
+
+    //adding the feature layer to the map
+    map.add(airportLayer);
+    // +++++++++++++++
+
+
+      console.log("adding school layer to map ...")
+
+
+    });  // end require function
+
 
     console.log(" done with script ...")
   </script>
