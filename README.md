@@ -1,3 +1,3 @@
-# G576_lab_2
-GEOG 576 Lab 2
-My ESRI JavaScript Map accessing AGOL
+# GEOG_576_Lab_3_REST
+GEOG 576 Lab 3 REST
+My ESRI JavaScript app using REST API
