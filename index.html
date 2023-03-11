@@ -30,14 +30,23 @@
       "esri/widgets/BasemapGallery",
       "esri/widgets/BasemapToggle",
       "esri/widgets/Locate",
-      "esri/widgets/Search"],
+      "esri/widgets/Search",
+      "esri/Graphic",
+      "esri/layers/GraphicsLayer",
+      "esri/layers/FeatureLayer",
+      "esri/widgets/Editor",
+    ],
       function(esriConfig, 
       Map, MapView,
       BasemapGallery,
       BasemapToggle,
       Locate,
-      Search) {  
-      esriConfig.apiKey = "AAPK31b6d186207249df8e734143d5a55707PfJ6EjieaYZVgURT8tlc7AuNytCxnD5Yg7FAFXY_nw7zKZlDoa8F1Ob929e5pYUa";
+      Search,
+      Graphic,
+      GraphicsLayer,
+      FeatureLayer,
+      Editor) {  
+      esriConfig.apiKey = "AAPK03b9a0de22274c8f922a56cee41a18c7naMG2lUhTDqyhXefepsp_y_Qx1HTS_ai-xBKiao8QOdMREzK1LK6PUr5cAGVY6dh";
       
       const map = new Map({
         basemap: "arcgis-imagery" // Basemap layer
@@ -45,6 +54,13 @@
 
       console.log("setting up mapView  ...")
 
+      // Airport Feature Layer
+      const myAirports = new FeatureLayer({
+        url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/MyAirports/FeatureServer",
+
+        // add popup
+        outFields: ["AirportCode"],
+      })
 
       const view = new MapView({
         map: map,
@@ -57,21 +73,20 @@
 
       }); // end MapView
 
-      console.log("setting up basemap gallery ...")
+      // Set the point layer's LayerInfo
+      const pointInfos = {
+      layer: myAirports
+      }
 
-      // basemap
-      const basemapGallery = new BasemapGallery({
-        view: view,
-        container: basemapGalleryDiv
-          });
+      // Begin Editor constructor
+      const editor = new Editor({
+      view: view,
+      layerInfos: [pointInfos]
+      }); // End Editor constructor
 
-      console.log("setting up basemap toggle ...")
+      // Add the widget to the view
+      view.ui.add(editor, "bottom-right");
 
-      // basemap toggle
-      const basemapToggle = new BasemapToggle({
-        view: view,
-        nextBasemap: "hybrid"
-      })
 
       console.log("setting up locateBtn  ...")
 
@@ -85,10 +100,6 @@
         view: view
       })
 
-      // Add the widget to the top-right corner of the view
-      view.ui.add(basemapGallery, {
-      position: "top-right"
-      });
 
       //add the locate widget to the top left corner of the view
       view.ui.add(locateBtn, {
@@ -99,9 +110,58 @@
       view.ui.add(searchWidget, {
         position: "top-right"
       })
+
+      // airport renderer
+      const airportRenderer = {
+        "type": "simple",
+        "symbol": {
+          "type": "picture-marker",
+          "url": "https://github.com/RandySincoularUW/GEOG_576_Lab_3_REST/blob/main/outline_local_airport_black_24dp.png",
+          "width": "20px",
+          "height": "20px"
+        }
+      }
+
+
+    // Airport Labels
+    const airportLabels = {
+        symbol: {
+          type: "text",
+          color: "#FFFFFF",
+          haloColor: "#5E8D74",
+          haloSize: "2px",
+          font: {
+            size: "12px",
+            family: "Noto Sans",
+            style: "italic",
+            weight: "normal"
+          }
+        },
+
+        labelPlacement: "above-center",
+        labelExpressionInfo: {
+          expression: "$feature.Fac_Name"
+        }
+      };
+
+    // airports layer
+    const airportLayer = new FeatureLayer({
+      url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/US_Airports_G756/FeatureServer",
+      renderer: airportRenderer, 
+      definitionExpression: "Fac_Type = 'AIRPORT'",
+      labelingInfo: [airportLabels]
+    })
+
+    // Add airport layer
+    map.add(airportLayer)
+
     });  // end require
 
     console.log(" done with script .for now..")
+
+
+
+
    </script>
 
 
@@ -110,8 +170,6 @@
   <!-- div to display map -->
   <div id="viewDiv"></div>
 
-  <!-- map gallery -->
-  <div id="basemapGalleryDiv"></div>
 </body>
 
 </body>
